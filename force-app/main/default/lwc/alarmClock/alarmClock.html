@@ -1,0 +1,20 @@
+<template>
+    <div class="alarm-card">
+        <h1>Alarm Clock</h1>
+        <img src={clockImage} alt="Clock Image" height="200px" width="200px" >
+        <h2>{currentTime}</h2>
+        <div class="slds-grid slds-gutters ">
+            <div class="slds-col">
+              <c-clock-dropdown label="Hour(s)" options={hours} select-label="select-hours" onoptionhandler={optionhandler}></c-clock-dropdown>
+            </div>
+            <div class="slds-col">
+                <c-clock-dropdown label="Minute(s)" options={minutes} select-label="select-minutes" onoptionhandler={optionhandler}></c-clock-dropdown>
+            </div>
+            <div class="slds-col">
+                <c-clock-dropdown label="AM/PM" options={meridins} select-label="select-meridins" onoptionhandler={optionhandler}></c-clock-dropdown>
+            </div>
+        </div>
+        <button class="slds-button slds-button_neutral slds-button_stretch">
+            Set Alarm</button>
+    </div>
+</template>
