@@ -1,15 +1,26 @@
 import { LightningElement } from 'lwc';
 import AlarmClockAssets from '@salesforce/resourceUrl/AlarmClockAssets';
 export default class AlarmClock extends LightningElement {
-    clockImage = AlarmClockAssets+'/AlarmClockAssets/clock.jpg';
+    clockImage = AlarmClockAssets+'/AlarmClockAssets/clock.png';
+    alarmtone = new Audio(AlarmClockAssets+'/AlarmClockAssets/Clocksound.mp3');
     currentTime = '';
     hours = [];
     minutes = [];
     meridins = ['AM','PM'];
-
+    alarTime;
+    isAlarmSet = false;
+    isAlarmTriggred = false;
     hourSelected;
     minuteSelected;
     meridinSelected;
+
+    get isDropDownNotSelected(){
+        return !(this.hourSelected && this.minuteSelected && this.meridinSelected);
+    }
+
+    get shakeImage(){
+        return this.isAlarmTriggred ? 'shake' : '';
+    }
 
     connectedCallback(){
         this.createMinutesOption();
@@ -36,6 +47,13 @@ export default class AlarmClock extends LightningElement {
             sec = sec<10 ? "0"+sec : sec;
 
             this.currentTime = `${hour}:${min}:${sec} ${ampm}`;
+            if(this.alarTime === `${hour}:${min} ${ampm}`){
+                //console.log("Alarm!!!");
+                this.isAlarmTriggred = true;
+                this.alarmtone.play();
+                this.alarmtone.loop = true;
+               // console.log(this.isAlarmTriggred);
+            }
         }, 1000)
 
     }
@@ -65,5 +83,20 @@ export default class AlarmClock extends LightningElement {
         console.log("this.hourselected", this.hourSelected);
         console.log("this.minuteselected", this.minuteSelected);
         console.log("this.meridinselected", this.meridinSelected);
+    }
+
+    setAlarmHandler(){
+        this.alarTime = `${this.hourSelected}:${this.minuteSelected} ${this.meridinSelected}`;
+        this.isAlarmSet = true;
+    }
+    cleartAlarmHandler(){
+        this.alarTime = '';
+        this.isAlarmSet = false;
+        this.isAlarmTriggred = false;
+        this.alarmtone.pause();
+        const elements = this.template.querySelectorAll('c-clock-dropdown');
+        Array.from(elements).forEach(element=>{
+            element.reset("");
+        })
     }
 }
